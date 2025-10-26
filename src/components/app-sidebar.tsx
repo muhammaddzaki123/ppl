@@ -39,11 +39,13 @@ const data = {
       title: "Dashboard",
       url: "/admin/dashboard",
       icon: LayoutDashboard,
+      items: undefined, // Explicitly set items to undefined
     },
     {
       title: "Data Barang",
       url: "/admin/databarang",
       icon: Box,
+      items: undefined, // Explicitly set items to undefined
     },
     {
       title: "Kelola Bahan",
@@ -66,6 +68,7 @@ const data = {
       title: "Profil",
       url: "/admin/profil",
       icon: User,
+      items: undefined, // Explicitly set items to undefined
     },
   ],
 };
