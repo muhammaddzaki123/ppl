@@ -7,25 +7,75 @@ import {
   Calendar,
   ShoppingCart,
   FileText,
+  Package,
 } from "lucide-react";
+import { getBahanMakanan } from "@/actions/databarang";
+import { getBahanMasuk } from "@/actions/barangmasuk";
+import { getBahanKeluar } from "@/actions/barangkeluar";
+import { BahanMasuk, BahanKeluar, BahanMakanan } from "@prisma/client";
+
+interface BahanMasukWithRelations extends BahanMasuk {
+  bahanMakanan: BahanMakanan;
+}
+
+interface BahanKeluarWithRelations extends BahanKeluar {
+  bahanMakanan: BahanMakanan;
+}
 
 export default function AdminDashboardPage() {
-  // Data dummy untuk statistik
-  const stats = {
-    dataBarang: 4,
-    barangMasuk: 2,
-    barangKeluar: 1,
-  };
+  const [stats, setStats] = React.useState({
+    dataBarang: 0,
+    barangMasuk: 0,
+    barangKeluar: 0,
+  });
+  const [barangMasukBulanIni, setBarangMasukBulanIni] = React.useState<
+    BahanMasukWithRelations[]
+  >([]);
+  const [barangKeluarBulanIni, setBarangKeluarBulanIni] = React.useState<
+    BahanKeluarWithRelations[]
+  >([]);
 
-  // Data dummy untuk tabel
-  const barangMasukBulanIni = [
-    { kodeBarang: "B001", tanggal: "2024-05-01", jumlah: 10 },
-    { kodeBarang: "B002", tanggal: "2024-05-03", jumlah: 5 },
-  ];
+  React.useEffect(() => {
+    async function fetchData() {
+      const [bahanMakanan, bahanMasuk, bahanKeluar] = await Promise.all([
+        getBahanMakanan(),
+        getBahanMasuk(),
+        getBahanKeluar(),
+      ]);
 
-  const barangKeluarBulanIni = [
-    { kodeBarang: "B003", tanggal: "2024-05-02", jumlah: 2 },
-  ];
+      const currentMonth = new Date().getMonth();
+      const currentYear = new Date().getFullYear();
+
+      const filteredBarangMasuk = (
+        bahanMasuk as BahanMasukWithRelations[]
+      ).filter((item) => {
+        const itemDate = new Date(item.tanggalMasuk);
+        return (
+          itemDate.getMonth() === currentMonth &&
+          itemDate.getFullYear() === currentYear
+        );
+      });
+
+      const filteredBarangKeluar = (
+        bahanKeluar as BahanKeluarWithRelations[]
+      ).filter((item) => {
+        const itemDate = new Date(item.tanggalKeluar);
+        return (
+          itemDate.getMonth() === currentMonth &&
+          itemDate.getFullYear() === currentYear
+        );
+      });
+
+      setStats({
+        dataBarang: bahanMakanan.length,
+        barangMasuk: bahanMasuk.length,
+        barangKeluar: bahanKeluar.length,
+      });
+      setBarangMasukBulanIni(filteredBarangMasuk);
+      setBarangKeluarBulanIni(filteredBarangKeluar);
+    }
+    fetchData();
+  }, []);
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
@@ -34,7 +84,7 @@ export default function AdminDashboardPage() {
         <div className="rounded-lg bg-blue-500 text-white shadow-sm">
           <div className="p-4 flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 className="text-sm font-medium">Data Barang</h3>
-            <Calendar className="h-4 w-4 text-white" />
+            <Package className="h-4 w-4 text-white" />
           </div>
           <div className="p-4">
             <div className="text-2xl font-bold">{stats.dataBarang}</div>
@@ -48,7 +98,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Card Barang Masuk */}
-        <div className="rounded-lg bg-red-500 text-white shadow-sm">
+        <div className="rounded-lg bg-green-500 text-white shadow-sm">
           <div className="p-4 flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 className="text-sm font-medium">Barang Masuk</h3>
             <ShoppingCart className="h-4 w-4 text-white" />
@@ -65,7 +115,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Card Barang Keluar */}
-        <div className="rounded-lg bg-green-500 text-white shadow-sm">
+        <div className="rounded-lg bg-red-500 text-white shadow-sm">
           <div className="p-4 flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 className="text-sm font-medium">Barang Keluar</h3>
             <FileText className="h-4 w-4 text-white" />
@@ -92,21 +142,27 @@ export default function AdminDashboardPage() {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="text-left">#</th>
                   <th className="text-left">Kode Barang</th>
                   <th className="text-left">Tanggal</th>
                   <th className="text-left">Jumlah</th>
                 </tr>
               </thead>
               <tbody>
-                {barangMasukBulanIni.map((item, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item.kodeBarang}</td>
-                    <td>{item.tanggal}</td>
-                    <td>{item.jumlah}</td>
+                {barangMasukBulanIni.length > 0 ? (
+                  barangMasukBulanIni.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.bahanMakanan.kode}</td>
+                      <td>{new Date(item.tanggalMasuk).toLocaleDateString()}</td>
+                      <td>{item.jumlah}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="text-center h-24">
+                      Tidak ada data.
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -121,21 +177,29 @@ export default function AdminDashboardPage() {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="text-left">#</th>
                   <th className="text-left">Kode Barang</th>
                   <th className="text-left">Tanggal</th>
                   <th className="text-left">Jumlah</th>
                 </tr>
               </thead>
               <tbody>
-                {barangKeluarBulanIni.map((item, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item.kodeBarang}</td>
-                    <td>{item.tanggal}</td>
-                    <td>{item.jumlah}</td>
+                {barangKeluarBulanIni.length > 0 ? (
+                  barangKeluarBulanIni.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.bahanMakanan.kode}</td>
+                      <td>
+                        {new Date(item.tanggalKeluar).toLocaleDateString()}
+                      </td>
+                      <td>{item.jumlah}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="text-center h-24">
+                      Tidak ada data.
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
