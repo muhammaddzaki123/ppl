@@ -12,7 +12,6 @@ async function main() {
         name: process.env.DEFAULT_ADMIN || 'Default Admin',
         email: process.env.DEFAULT_ADMIN_EMAIL || 'admin@local.com',
         password,
-        role: 'SUPER_ADMIN',
       },
     });
     console.log(`Seeded default admin: ${process.env.DEFAULT_ADMIN_EMAIL || 'admin@local.com'} / ${process.env.DEFAULT_ADMIN_PASSWORD || 'admin123'}`);

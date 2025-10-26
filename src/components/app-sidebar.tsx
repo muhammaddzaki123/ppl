@@ -2,11 +2,12 @@
 
 import * as React from "react";
 import {
-  BookOpen,
-  Frame,
-  Settings2,
-  Hamburger,
-  Users,
+  LayoutDashboard,
+  Box,
+  ArrowLeftRight,
+  User,
+  PackagePlus,
+  PackageMinus,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -22,111 +23,49 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Admin",
+    email: "admin@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
     {
-      name: "HepiBite",
-      logo: Frame,
-      plan: "Enterprise",
+      name: "Inventaris",
+      logo: Box,
+      plan: "Gratis",
     },
   ],
   navMain: [
     {
       title: "Dashboard",
       url: "/admin/dashboard",
-      icon: Frame,
+      icon: LayoutDashboard,
     },
     {
-      title: "Products",
+      title: "Data Barang",
+      url: "/admin/databarang",
+      icon: Box,
+    },
+    {
+      title: "Kelola Bahan",
       url: "#",
-      icon: Hamburger,
-      isActive: true,
+      icon: ArrowLeftRight,
       items: [
         {
-          title: "All Products",
-          url: "/admin/products",
+          title: "Barang Masuk",
+          url: "/admin/barangmasuk",
+          icon: PackagePlus,
         },
         {
-          title: "Categories",
-          url: "/admin/categories",
-        },
-        {
-          title: "Vouchers",
-          url: "/admin/vouchers",
-        },
-        {
-          title: "Archived",
-          url: "/admin/products/archived",
-        },
-        {
-          title: "Store",
-          url: "/admin/products/store",
-        },
-        {
-          title: "Partners",
-          url: "/admin/partners",
+          title: "Barang Keluar",
+          url: "/admin/barangkeluar",
+          icon: PackageMinus,
         },
       ],
     },
     {
-      title: "Users",
-      url: "#",
-      icon: Users,
-      items: [
-        {
-          title: "All Users",
-          url: "/admin/users",
-        },
-      ],
-    },
-    {
-      title: "Orders",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Orders Overview",
-          url: "/admin/orders",
-        },
-        {
-          title: "Deliveries",
-          url: "/admin/deliveries",
-        },
-        {
-          title: "Orders History",
-          url: "/admin/orders/history",
-        },
-        {
-          title: "Order Analytics",
-          url: "/admin/orders/analytics",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
+      title: "Profil",
+      url: "/admin/profil",
+      icon: User,
     },
   ],
 };
