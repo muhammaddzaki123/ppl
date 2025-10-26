@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient();
@@ -10,7 +10,10 @@ const BahanMakananSchema = z.object({
   kode: z.string().min(1, "Kode tidak boleh kosong"),
   nama: z.string().min(1, "Nama tidak boleh kosong"),
   satuan: z.string().min(1, "Satuan tidak boleh kosong"),
+  stok: z.coerce.number().int().min(0, "Stok tidak boleh negatif"),
 });
+
+const UpdateBahanMakananSchema = BahanMakananSchema.omit({ stok: true });
 
 export async function getBahanMakanan() {
   return await prisma.bahanMakanan.findMany();
@@ -21,6 +24,7 @@ export async function addBahanMakanan(formData: FormData) {
     kode: formData.get("kode"),
     nama: formData.get("nama"),
     satuan: formData.get("satuan"),
+    stok: formData.get("stok"),
   });
 
   if (!validatedFields.success) {
@@ -41,7 +45,7 @@ export async function addBahanMakanan(formData: FormData) {
 }
 
 export async function updateBahanMakanan(id: string, formData: FormData) {
-  const validatedFields = BahanMakananSchema.safeParse({
+  const validatedFields = UpdateBahanMakananSchema.safeParse({
     kode: formData.get("kode"),
     nama: formData.get("nama"),
     satuan: formData.get("satuan"),
@@ -73,6 +77,15 @@ export async function deleteBahanMakanan(id: string) {
     revalidatePath("/admin/databarang");
     return { message: "Data berhasil dihapus" };
   } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2003"
+    ) {
+      return {
+        message:
+          "Gagal menghapus data karena masih digunakan di data barang masuk/keluar",
+      };
+    }
     return { message: "Gagal menghapus data" };
   }
 }

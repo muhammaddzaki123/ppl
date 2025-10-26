@@ -22,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-interface FormFieldConfig<TFormValues extends FieldValues> {
+export interface FormFieldConfig<TFormValues extends FieldValues> {
   name: Path<TFormValues>;
   label: string;
   type: string;
@@ -46,15 +46,11 @@ export function GenericForm<TFormValues extends FieldValues>({
   isLoading,
 }: GenericFormProps<TFormValues>) {
   const form = useForm<TFormValues>({
-    // zodResolver's inferred return types don't always line up exactly with
-    // react-hook-form's Resolver generic shape. Cast to the expected Resolver
-    // shape so the control/resolver types remain consistent for the form.
     resolver: zodResolver(schema) as unknown as Resolver<
       TFormValues,
       any,
       TFormValues
     >,
-    // defaultValues expects DefaultValues<TFormValues>
     defaultValues: initialData as DefaultValues<TFormValues> | undefined,
   });
 

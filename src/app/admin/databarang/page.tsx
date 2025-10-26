@@ -9,7 +9,10 @@ import {
   updateBahanMakanan,
 } from "@/actions/databarang";
 import { PageHeader } from "@/components/admin/page-header";
-import { GenericForm } from "@/components/admin/shared/form";
+import {
+  GenericForm,
+  FormFieldConfig,
+} from "@/components/admin/shared/form";
 import { DataTable } from "@/components/admin/shared/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +35,7 @@ const BahanMakananSchema = z.object({
   kode: z.string().min(1, "Kode tidak boleh kosong"),
   nama: z.string().min(1, "Nama tidak boleh kosong"),
   satuan: z.string().min(1, "Satuan tidak boleh kosong"),
+  stok: z.coerce.number().int().min(0, "Stok tidak boleh negatif"),
 });
 
 type BahanMakananFormValues = z.infer<typeof BahanMakananSchema>;
@@ -56,7 +60,7 @@ export default function DataBarangPage() {
     setLoading(true);
     const dataToSend = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      dataToSend.append(key, value);
+      dataToSend.append(key, String(value));
     });
 
     if (editingItem) {
@@ -87,12 +91,23 @@ export default function DataBarangPage() {
     { header: "Kode", accessor: "kode" as const },
     { header: "Nama Barang", accessor: "nama" as const },
     { header: "Satuan", accessor: "satuan" as const },
+    { header: "Jumlah", accessor: "stok" as const },
   ];
 
-  const formFields = [
-    { name: "kode", label: "Kode", type: "text", placeholder: "Contoh: B001" },
-    { name: "nama", label: "Nama Barang", type: "text", placeholder: "Contoh: Tepung Terigu" },
-    { name: "satuan", label: "Satuan", type: "text", placeholder: "Contoh: kg" },
+  const formFields: FormFieldConfig<BahanMakananFormValues>[] = [
+    { name: "kode" as const, label: "Kode", type: "text", placeholder: "Contoh: B001" },
+    { name: "nama" as const, label: "Nama Barang", type: "text", placeholder: "Contoh: Tepung Terigu" },
+    { name: "satuan" as const, label: "Satuan", type: "text", placeholder: "Contoh: kg" },
+    ...(editingItem
+      ? []
+      : [
+          {
+            name: "stok" as const,
+            label: "Jumlah",
+            type: "number",
+            placeholder: "Contoh: 10",
+          },
+        ]),
   ];
 
   return (

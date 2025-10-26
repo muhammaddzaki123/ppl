@@ -34,10 +34,28 @@ export async function addBahanKeluar(formData: FormData) {
   }
 
   try {
-    await prisma.bahanKeluar.create({
-      data: validatedFields.data,
+    const { bahanMakananId, jumlah } = validatedFields.data;
+    const bahanMakanan = await prisma.bahanMakanan.findUnique({
+      where: { id: bahanMakananId },
     });
+    if (!bahanMakanan || bahanMakanan.stok < jumlah) {
+      return { message: "Stok tidak mencukupi" };
+    }
+    await prisma.$transaction([
+      prisma.bahanKeluar.create({
+        data: validatedFields.data,
+      }),
+      prisma.bahanMakanan.update({
+        where: { id: bahanMakananId },
+        data: {
+          stok: {
+            decrement: jumlah,
+          },
+        },
+      }),
+    ]);
     revalidatePath("/admin/barangkeluar");
+    revalidatePath("/admin/databarang");
     return { message: "Data berhasil ditambahkan" };
   } catch (error) {
     return { message: "Gagal menambahkan data" };
@@ -58,11 +76,46 @@ export async function updateBahanKeluar(id: string, formData: FormData) {
   }
 
   try {
-    await prisma.bahanKeluar.update({
+    const { bahanMakananId, jumlah } = validatedFields.data;
+    const bahanKeluar = await prisma.bahanKeluar.findUnique({
       where: { id },
-      data: validatedFields.data,
     });
+    if (!bahanKeluar) {
+      return { message: "Data tidak ditemukan" };
+    }
+    const bahanMakanan = await prisma.bahanMakanan.findUnique({
+      where: { id: bahanMakananId },
+    });
+    if (
+      !bahanMakanan ||
+      bahanMakanan.stok + bahanKeluar.jumlah < jumlah
+    ) {
+      return { message: "Stok tidak mencukupi" };
+    }
+    await prisma.$transaction([
+      prisma.bahanMakanan.update({
+        where: { id: bahanKeluar.bahanMakananId },
+        data: {
+          stok: {
+            increment: bahanKeluar.jumlah,
+          },
+        },
+      }),
+      prisma.bahanMakanan.update({
+        where: { id: bahanMakananId },
+        data: {
+          stok: {
+            decrement: jumlah,
+          },
+        },
+      }),
+      prisma.bahanKeluar.update({
+        where: { id },
+        data: validatedFields.data,
+      }),
+    ]);
     revalidatePath("/admin/barangkeluar");
+    revalidatePath("/admin/databarang");
     return { message: "Data berhasil diubah" };
   } catch (error) {
     return { message: "Gagal mengubah data" };
@@ -71,10 +124,27 @@ export async function updateBahanKeluar(id: string, formData: FormData) {
 
 export async function deleteBahanKeluar(id: string) {
   try {
-    await prisma.bahanKeluar.delete({
+    const bahanKeluar = await prisma.bahanKeluar.findUnique({
       where: { id },
     });
+    if (!bahanKeluar) {
+      return { message: "Data tidak ditemukan" };
+    }
+    await prisma.$transaction([
+      prisma.bahanMakanan.update({
+        where: { id: bahanKeluar.bahanMakananId },
+        data: {
+          stok: {
+            increment: bahanKeluar.jumlah,
+          },
+        },
+      }),
+      prisma.bahanKeluar.delete({
+        where: { id },
+      }),
+    ]);
     revalidatePath("/admin/barangkeluar");
+    revalidatePath("/admin/databarang");
     return { message: "Data berhasil dihapus" };
   } catch (error) {
     return { message: "Gagal menghapus data" };

@@ -31,7 +31,7 @@ const data = {
     {
       name: "Inventaris",
       logo: Box,
-      plan: "Gratis",
+      plan: "RS",
     },
   ],
   navMain: [

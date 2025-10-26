@@ -34,10 +34,22 @@ export async function addBahanMasuk(formData: FormData) {
   }
 
   try {
-    await prisma.bahanMasuk.create({
-      data: validatedFields.data,
-    });
+    const { bahanMakananId, jumlah } = validatedFields.data;
+    await prisma.$transaction([
+      prisma.bahanMasuk.create({
+        data: validatedFields.data,
+      }),
+      prisma.bahanMakanan.update({
+        where: { id: bahanMakananId },
+        data: {
+          stok: {
+            increment: jumlah,
+          },
+        },
+      }),
+    ]);
     revalidatePath("/admin/barangmasuk");
+    revalidatePath("/admin/databarang");
     return { message: "Data berhasil ditambahkan" };
   } catch (error) {
     return { message: "Gagal menambahkan data" };
@@ -58,11 +70,35 @@ export async function updateBahanMasuk(id: string, formData: FormData) {
   }
 
   try {
-    await prisma.bahanMasuk.update({
-      where: { id },
-      data: validatedFields.data,
-    });
+    const { bahanMakananId, jumlah } = validatedFields.data;
+    const bahanMasuk = await prisma.bahanMasuk.findUnique({ where: { id } });
+    if (!bahanMasuk) {
+      return { message: "Data tidak ditemukan" };
+    }
+    await prisma.$transaction([
+      prisma.bahanMakanan.update({
+        where: { id: bahanMasuk.bahanMakananId },
+        data: {
+          stok: {
+            decrement: bahanMasuk.jumlah,
+          },
+        },
+      }),
+      prisma.bahanMakanan.update({
+        where: { id: bahanMakananId },
+        data: {
+          stok: {
+            increment: jumlah,
+          },
+        },
+      }),
+      prisma.bahanMasuk.update({
+        where: { id },
+        data: validatedFields.data,
+      }),
+    ]);
     revalidatePath("/admin/barangmasuk");
+    revalidatePath("/admin/databarang");
     return { message: "Data berhasil diubah" };
   } catch (error) {
     return { message: "Gagal mengubah data" };
@@ -71,10 +107,25 @@ export async function updateBahanMasuk(id: string, formData: FormData) {
 
 export async function deleteBahanMasuk(id: string) {
   try {
-    await prisma.bahanMasuk.delete({
-      where: { id },
-    });
+    const bahanMasuk = await prisma.bahanMasuk.findUnique({ where: { id } });
+    if (!bahanMasuk) {
+      return { message: "Data tidak ditemukan" };
+    }
+    await prisma.$transaction([
+      prisma.bahanMakanan.update({
+        where: { id: bahanMasuk.bahanMakananId },
+        data: {
+          stok: {
+            decrement: bahanMasuk.jumlah,
+          },
+        },
+      }),
+      prisma.bahanMasuk.delete({
+        where: { id },
+      }),
+    ]);
     revalidatePath("/admin/barangmasuk");
+    revalidatePath("/admin/databarang");
     return { message: "Data berhasil dihapus" };
   } catch (error) {
     return { message: "Gagal menghapus data" };

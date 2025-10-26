@@ -202,7 +202,7 @@ export default function BarangKeluarPage() {
                             <SelectContent>
                               {bahanMakanan.map((item) => (
                                 <SelectItem key={item.id} value={item.id}>
-                                  {item.nama}
+                                  {`${item.kode} - ${item.nama}`}
                                 </SelectItem>
                               ))}
                             </SelectContent>
