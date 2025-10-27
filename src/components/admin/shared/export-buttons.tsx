@@ -12,7 +12,7 @@ interface ExportButtonsProps<TData> {
 }
 
 const resolvePath = (obj: any, path: string) => {
-  return path.split('.').reduce((prev, curr) => (prev ? prev[curr] : null), obj);
+  return path.split(".").reduce((prev, curr) => (prev ? prev[curr] : null), obj);
 };
 
 export function ExportButtons<TData>({
@@ -50,10 +50,55 @@ export function ExportButtons<TData>({
     XLSX.writeFile(workbook, `${fileName}.xlsx`);
   };
 
+  const handlePrint = () => {
+    const tableHeaders = columns.map((col) => `<th>${col.header}</th>`).join("");
+    const tableBody = data
+      .map(
+        (row) =>
+          `<tr>${columns
+            .map((col) => `<td>${resolvePath(row, col.accessorKey)}</td>`)
+            .join("")}</tr>`
+      )
+      .join("");
+
+    const printContent = `
+      <html>
+        <head>
+          <title>Print - ${fileName}</title>
+          <style>
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid black; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+          </style>
+        </head>
+        <body>
+          <h1>${fileName}</h1>
+          <table>
+            <thead><tr>${tableHeaders}</tr></thead>
+            <tbody>${tableBody}</tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.print();
+      printWindow.close();
+    }
+  };
+
   return (
-    <div className="flex gap-2">
-      <Button onClick={handleExportPDF}>Export to PDF</Button>
-      <Button onClick={handleExportExcel}>Export to Excel</Button>
+    <div className="flex justify-end gap-2">
+      <Button onClick={handleExportPDF} variant="outline">
+        PDF
+      </Button>
+      <Button onClick={handleExportExcel} variant="outline">
+        Excel
+      </Button>
+      <Button onClick={handlePrint}>Cetak</Button>
     </div>
   );
 }
