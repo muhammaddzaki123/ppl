@@ -33,9 +33,7 @@ export function ExportModal<TData>({
   dateKey,
 }: ExportModalProps<TData>) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedMonths, setSelectedMonths] = React.useState<string[]>([
-    (new Date().getMonth() + 1).toString(),
-  ]);
+  const [selectedMonths, setSelectedMonths] = React.useState<string[]>([]);
   const [selectedYear, setSelectedYear] = React.useState<string>(
     new Date().getFullYear().toString()
   );
@@ -66,7 +64,6 @@ export function ExportModal<TData>({
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="flex items-center gap-4">
-            <div className="w-[250px]">
             <MultiSelect
               options={Array.from({ length: 12 }, (_, i) => ({
                 value: (i + 1).toString(),
@@ -77,9 +74,8 @@ export function ExportModal<TData>({
               placeholder="Pilih Bulan"
               className="flex-1"
             />
-            </div>
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="w-[190px]">
+              <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Pilih Tahun" />
               </SelectTrigger>
               <SelectContent>

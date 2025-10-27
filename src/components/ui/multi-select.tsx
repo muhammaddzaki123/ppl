@@ -13,6 +13,8 @@ import {
 import { Command as CommandPrimitive } from "cmdk";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "./button";
+import { cn } from "@/lib/utils";
+import { Checkbox } from "./checkbox";
 
 interface MultiSelectProps {
   options: { label: string; value: string }[];
@@ -25,7 +27,7 @@ interface MultiSelectProps {
 const MultiSelect = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
   MultiSelectProps
->(({ options, onValueChange, defaultValue = [], placeholder = "Select options", className }, ref) => {
+>(({ options, onValueChange, defaultValue = [], placeholder = "Pilih...", className }, ref) => {
   const [selectedValues, setSelectedValues] = React.useState<string[]>(defaultValue);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -42,6 +44,7 @@ const MultiSelect = React.forwardRef<
   };
 
   const getSelectedLabels = () => {
+    if (selectedValues.length === 0) return placeholder;
     return options
       .filter((option) => selectedValues.includes(option.value))
       .map((option) => option.label)
@@ -55,12 +58,10 @@ const MultiSelect = React.forwardRef<
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
-          className={`w-full justify-between ${selectedValues.length > 0 ? "text-primary" : "text-muted-foreground"}`}
+          className={cn("w-full justify-between", className)}
           onClick={() => setIsOpen(!isOpen)}
         >
-          <span className="truncate">
-            {selectedValues.length > 0 ? getSelectedLabels() : placeholder}
-          </span>
+          <span className="truncate">{getSelectedLabels()}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[250px] p-0">
@@ -73,14 +74,18 @@ const MultiSelect = React.forwardRef<
                   onSelect={() => handleSelect(option.value)}
                   className="cursor-pointer"
                 >
+                  <Checkbox
+                    checked={selectedValues.includes(option.value)}
+                    className="mr-2"
+                  />
                   {option.label}
                 </CommandItem>
               ))}
             </CommandGroup>
           </CommandList>
         </Command>
-        <div className="p-2">
-          {selectedValues.length > 0 && (
+        {selectedValues.length > 0 && (
+          <div className="p-2 border-t">
             <div className="flex flex-wrap gap-1">
               {selectedValues.map((value) => {
                 const option = options.find((o) => o.value === value);
@@ -93,14 +98,17 @@ const MultiSelect = React.forwardRef<
                     {option?.label}
                     <X
                       className="h-3 w-3 cursor-pointer"
-                      onClick={() => handleSelect(value)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent dropdown from closing
+                        handleSelect(value);
+                      }}
                     />
                   </Badge>
                 );
               })}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );
