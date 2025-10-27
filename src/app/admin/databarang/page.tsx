@@ -30,6 +30,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { BahanMakanan } from "@prisma/client";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
 const BahanMakananSchema = z.object({
   kode: z.string().min(1, "Kode tidak boleh kosong"),
@@ -87,11 +89,63 @@ export default function DataBarangPage() {
     setData(result);
   };
 
-  const columns = [
-    { header: "Kode", accessor: "kode" as const },
-    { header: "Nama Barang", accessor: "nama" as const },
-    { header: "Satuan", accessor: "satuan" as const },
-    { header: "Jumlah", accessor: "stok" as const },
+  const columns: ColumnDef<BahanMakanan>[] = [
+    {
+      accessorKey: "kode",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Kode
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
+      accessorKey: "nama",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Nama Barang
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
+      accessorKey: "satuan",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Satuan
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
+      accessorKey: "stok",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Jumlah
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
   ];
 
   const formFields: FormFieldConfig<BahanMakananFormValues>[] = [
