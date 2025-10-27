@@ -257,8 +257,10 @@ export default function BarangKeluarPage() {
                               type="date"
                               {...field}
                               value={
-                                field.value instanceof Date
-                                  ? field.value.toISOString().split("T")[0]
+                                field.value
+                                  ? new Date(field.value)
+                                      .toISOString()
+                                      .split("T")[0]
                                   : ""
                               }
                             />
