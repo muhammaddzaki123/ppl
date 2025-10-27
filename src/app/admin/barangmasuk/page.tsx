@@ -35,16 +35,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { BahanMakanan, BahanMasuk } from "@prisma/client";
 import { useForm, DefaultValues, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
 const BahanMasukSchema = z.object({
   bahanMakananId: z.string().min(1, "Bahan makanan tidak boleh kosong"),
@@ -67,7 +63,6 @@ export default function BarangMasukPage() {
   const [isLoading, setLoading] = React.useState(false);
 
   const form = useForm<BahanMasukFormValues>({
-    // Cast resolver/defaultValues to match react-hook-form generics
     resolver: zodResolver(BahanMasukSchema) as unknown as Resolver<
       BahanMasukFormValues,
       any,
@@ -139,20 +134,57 @@ export default function BarangMasukPage() {
     setData(result as BahanMasukWithRelations[]);
   };
 
-  const columns = [
+  const columns: ColumnDef<BahanMasukWithRelations>[] = [
     {
-      header: "Kode Barang",
-      accessor: "bahanMakanan" as const,
-      render: (item: BahanMasukWithRelations) => item.bahanMakanan.kode,
+      accessorKey: "bahanMakanan.kode",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Kode Barang
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
     },
     {
-      header: "Tanggal",
-      accessor: "tanggalMasuk" as const,
-      render: (item: BahanMasukWithRelations) =>
-        new Date(item.tanggalMasuk).toLocaleDateString(),
+      accessorKey: "tanggalMasuk",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Tanggal
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) =>
+        new Date(row.original.tanggalMasuk).toLocaleDateString(),
     },
-    { header: "Jumlah", accessor: "jumlah" as const },
+    {
+      accessorKey: "jumlah",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Jumlah
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
   ];
+
+  const bahanMakananOptions = bahanMakanan.map((item) => ({
+    value: item.id,
+    label: `${item.kode} - ${item.nama}`,
+  }));
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -188,23 +220,15 @@ export default function BarangMasukPage() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Bahan Makanan</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Pilih bahan makanan" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {bahanMakanan.map((item) => (
-                                <SelectItem key={item.id} value={item.id}>
-                                  {`${item.kode} - ${item.nama}`}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <FormControl>
+                            <Combobox
+                              options={bahanMakananOptions}
+                              {...field}
+                              placeholder="Pilih bahan makanan"
+                              searchPlaceholder="Cari bahan makanan..."
+                              noResultsMessage="Bahan makanan tidak ditemukan."
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -254,17 +278,10 @@ export default function BarangMasukPage() {
         </CardHeader>
         <CardContent>
           <DataTable
-            columns={columns.map((c) => ({
-              header: c.header,
-              accessor: c.accessor,
-            }))}
-            data={data.map((row) => ({
-              ...row,
-              bahanMakanan: row.bahanMakanan.kode,
-              tanggalMasuk: new Date(row.tanggalMasuk).toLocaleDateString(),
-            }))}
-            onEdit={handleEdit as any}
-            onDelete={handleDelete as any}
+            columns={columns}
+            data={data}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
         </CardContent>
       </Card>
