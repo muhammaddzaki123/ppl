@@ -91,14 +91,24 @@ export function ExportButtons<TData>({
   };
 
   return (
-    <div className="flex justify-end gap-2">
-      <Button onClick={handleExportPDF} variant="outline">
+    <div className="flex flex-col gap-2 md:flex-row md:justify-end">
+      <Button
+        onClick={handleExportPDF}
+        variant="outline"
+        className="w-full md:w-auto"
+      >
         PDF
       </Button>
-      <Button onClick={handleExportExcel} variant="outline">
+      <Button
+        onClick={handleExportExcel}
+        variant="outline"
+        className="w-full md:w-auto"
+      >
         Excel
       </Button>
-      <Button onClick={handlePrint}>Cetak</Button>
+      <Button onClick={handlePrint} className="w-full md:w-auto">
+        Cetak
+      </Button>
     </div>
   );
 }

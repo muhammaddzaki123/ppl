@@ -63,29 +63,35 @@ export function GenericForm<TFormValues extends FieldValues>({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {fields.map((fieldConfig) => (
-          <FormField
-            key={fieldConfig.name}
-            control={form.control}
-            name={fieldConfig.name}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{fieldConfig.label}</FormLabel>
-                <FormControl>
-                  <Input
-                    type={fieldConfig.type}
-                    placeholder={fieldConfig.placeholder}
-                    {...field}
-                    value={
-                      field.value as string | number | readonly string[] | undefined
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          {fields.map((fieldConfig) => (
+            <FormField
+              key={fieldConfig.name}
+              control={form.control}
+              name={fieldConfig.name}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{fieldConfig.label}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type={fieldConfig.type}
+                      placeholder={fieldConfig.placeholder}
+                      {...field}
+                      value={
+                        field.value as
+                          | string
+                          | number
+                          | readonly string[]
+                          | undefined
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+        </div>
         <Button type="submit" disabled={isLoading}>
           {isLoading ? "Menyimpan..." : "Simpan"}
         </Button>

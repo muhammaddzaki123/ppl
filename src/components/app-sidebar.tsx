@@ -8,6 +8,7 @@ import {
   User,
   PackagePlus,
   PackageMinus,
+  Users,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -61,6 +62,17 @@ const data = {
           title: "Barang Keluar",
           url: "/admin/barangkeluar",
           icon: PackageMinus,
+        },
+      ],
+    },
+        {
+      title: "Users",
+      url: "#",
+      icon: Users,
+      items: [
+        {
+          title: "All Users",
+          url: "/admin/users",
         },
       ],
     },

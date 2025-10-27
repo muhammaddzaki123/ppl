@@ -168,18 +168,23 @@ export default function DataBarangPage() {
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <CardTitle>Data Barang</CardTitle>
-              <CardDescription>Kelola data bahan makanan Anda.</CardDescription>
+              <CardDescription>
+                Kelola data bahan makanan Anda.
+              </CardDescription>
             </div>
             <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
-                <Button onClick={() => setEditingItem(null)}>
+                <Button
+                  onClick={() => setEditingItem(null)}
+                  className="w-full md:w-auto"
+                >
                   Tambah Barang
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="sm:max-w-[425px] md:max-w-[600px]">
                 <DialogHeader>
                   <DialogTitle>
                     {editingItem ? "Edit Barang" : "Tambah Barang"}

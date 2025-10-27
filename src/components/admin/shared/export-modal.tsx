@@ -56,26 +56,28 @@ export function ExportModal<TData>({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Export</Button>
+        <Button className="w-full md:w-auto">Export</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px] md:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Export Data</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col items-center gap-4 md:flex-row">
             <MultiSelect
               options={Array.from({ length: 12 }, (_, i) => ({
                 value: (i + 1).toString(),
-                label: new Date(0, i).toLocaleString("id-ID", { month: "long" }),
+                label: new Date(0, i).toLocaleString("id-ID", {
+                  month: "long",
+                }),
               }))}
               onValueChange={setSelectedMonths}
               defaultValue={selectedMonths}
               placeholder="Pilih Bulan"
-              className="flex-1"
+              className="w-full flex-1"
             />
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="w-[120px]">
+              <SelectTrigger className="w-full md:w-[120px]">
                 <SelectValue placeholder="Pilih Tahun" />
               </SelectTrigger>
               <SelectContent>
