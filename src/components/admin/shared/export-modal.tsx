@@ -66,6 +66,7 @@ export function ExportModal<TData>({
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="flex items-center gap-4">
+            <div className="w-[250px]">
             <MultiSelect
               options={Array.from({ length: 12 }, (_, i) => ({
                 value: (i + 1).toString(),
@@ -74,10 +75,11 @@ export function ExportModal<TData>({
               onValueChange={setSelectedMonths}
               defaultValue={selectedMonths}
               placeholder="Pilih Bulan"
-              className="w-full"
+              className="flex-1"
             />
+            </div>
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[190px]">
                 <SelectValue placeholder="Pilih Tahun" />
               </SelectTrigger>
               <SelectContent>
