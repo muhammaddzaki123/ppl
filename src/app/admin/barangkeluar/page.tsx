@@ -20,6 +20,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -61,6 +68,12 @@ export default function BarangKeluarPage() {
   const [editingItem, setEditingItem] =
     React.useState<BahanKeluarWithRelations | null>(null);
   const [isLoading, setLoading] = React.useState(false);
+  const [selectedMonth, setSelectedMonth] = React.useState<string>(
+    (new Date().getMonth() + 1).toString()
+  );
+  const [selectedYear, setSelectedYear] = React.useState<string>(
+    new Date().getFullYear().toString()
+  );
 
   const form = useForm<BahanKeluarFormValues>({
     resolver: zodResolver(BahanKeluarSchema) as unknown as Resolver<
@@ -186,6 +199,18 @@ export default function BarangKeluarPage() {
     label: `${item.kode} - ${item.nama}`,
   }));
 
+  const years = Array.from(
+    new Set(data.map((item) => new Date(item.tanggalKeluar).getFullYear()))
+  ).sort();
+
+  const filteredData = data.filter((item) => {
+    const itemDate = new Date(item.tanggalKeluar);
+    return (
+      itemDate.getMonth() + 1 === parseInt(selectedMonth) &&
+      itemDate.getFullYear() === parseInt(selectedYear)
+    );
+  });
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <Card>
@@ -197,91 +222,119 @@ export default function BarangKeluarPage() {
                 Kelola data bahan makanan yang keluar.
               </CardDescription>
             </div>
-            <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={() => setEditingItem(null)}>
-                  Tambah Data
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingItem ? "Edit Data" : "Tambah Data"}
-                  </DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(handleSubmit)}
-                    className="space-y-8"
-                  >
-                    <FormField
-                      control={form.control}
-                      name="bahanMakananId"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Bahan Makanan</FormLabel>
-                          <FormControl>
-                            <Combobox
-                              options={bahanMakananOptions}
-                              {...field}
-                              placeholder="Pilih bahan makanan"
-                              searchPlaceholder="Cari bahan makanan..."
-                              noResultsMessage="Bahan makanan tidak ditemukan."
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="jumlah"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Jumlah</FormLabel>
-                          <FormControl>
-                            <Input type="number" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="tanggalKeluar"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tanggal Keluar</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="date"
-                              {...field}
-                              value={
-                                field.value
-                                  ? new Date(field.value)
-                                      .toISOString()
-                                      .split("T")[0]
-                                  : ""
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" disabled={isLoading}>
-                      {isLoading ? "Menyimpan..." : "Simpan"}
-                    </Button>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
+            <div className="flex gap-2">
+              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Pilih Bulan" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <SelectItem key={i + 1} value={(i + 1).toString()}>
+                      {new Date(0, i).toLocaleString("default", {
+                        month: "long",
+                      })}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Pilih Tahun" />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={() => setEditingItem(null)}>
+                    Tambah Data
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      {editingItem ? "Edit Data" : "Tambah Data"}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(handleSubmit)}
+                      className="space-y-8"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="bahanMakananId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Bahan Makanan</FormLabel>
+                            <FormControl>
+                              <Combobox
+                                options={bahanMakananOptions}
+                                {...field}
+                                placeholder="Pilih bahan makanan"
+                                searchPlaceholder="Cari bahan makanan..."
+                                noResultsMessage="Bahan makanan tidak ditemukan."
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="jumlah"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Jumlah</FormLabel>
+                            <FormControl>
+                              <Input type="number" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="tanggalKeluar"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Tanggal Keluar</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="date"
+                                {...field}
+                                value={
+                                  field.value
+                                    ? new Date(field.value)
+                                        .toISOString()
+                                        .split("T")[0]
+                                    : ""
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button type="submit" disabled={isLoading}>
+                        {isLoading ? "Menyimpan..." : "Simpan"}
+                      </Button>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
           <DataTable
             columns={columns}
-            data={data}
+            data={filteredData}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />
