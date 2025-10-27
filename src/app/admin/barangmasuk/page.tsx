@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ExportModal } from "@/components/admin/shared/export-modal";
 import {
   Dialog,
   DialogContent,
@@ -249,6 +250,23 @@ export default function BarangMasukPage() {
                   ))}
                 </SelectContent>
               </Select>
+              <ExportModal
+                data={data}
+                columns={[
+                  {
+                    header: "Kode Barang",
+                    accessorKey: "bahanMakanan.kode",
+                  },
+                  {
+                    header: "Nama Barang",
+                    accessorKey: "bahanMakanan.nama",
+                  },
+                  { header: "Tanggal", accessorKey: "tanggalMasuk" },
+                  { header: "Jumlah", accessorKey: "jumlah" },
+                ]}
+                fileName="barang_masuk"
+                dateKey="tanggalMasuk"
+              />
               <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
                   <Button onClick={() => setEditingItem(null)}>
