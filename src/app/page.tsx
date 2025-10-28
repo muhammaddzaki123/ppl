@@ -1,3 +1,6 @@
+"use client";
+
+import { ModeToggle } from "@/components/mode-toggle";
 import Image from "next/image";
 import Link from "next/link"; // 1. IMPORT Link dari next/link
 
@@ -36,6 +39,7 @@ export default function Home() {
           >
             Login
         </Link>
+        <ModeToggle />
         </div>
 
       </header>
