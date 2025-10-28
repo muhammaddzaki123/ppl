@@ -9,6 +9,8 @@ import {
   getBahanMakananWithStockHistory,
   updateBahanMakanan,
 } from "@/actions/databarang";
+import { getBahanMasuk } from "@/actions/barangmasuk";
+import { getBahanKeluar } from "@/actions/barangkeluar";
 import { ExportModal } from "@/components/admin/shared/export-modal";
 import {
   GenericForm,
@@ -71,11 +73,28 @@ export default function DataBarangPage() {
   const [selectedYear, setSelectedYear] = React.useState<string>(
     new Date().getFullYear().toString()
   );
+  const [years, setYears] = React.useState<number[]>([]);
 
   React.useEffect(() => {
     async function fetchData() {
-      const result = await getBahanMakanan();
-      setData(result);
+      const [
+        bahanMakananData,
+        bahanMasukData,
+        bahanKeluarData,
+      ] = await Promise.all([
+        getBahanMakanan(),
+        getBahanMasuk(),
+        getBahanKeluar(),
+      ]);
+      setData(bahanMakananData);
+      const masukYears = bahanMasukData.map((item) =>
+        new Date(item.tanggalMasuk).getFullYear()
+      );
+      const keluarYears = bahanKeluarData.map((item) =>
+        new Date(item.tanggalKeluar).getFullYear()
+      );
+      const allYears = [...new Set([...masukYears, ...keluarYears])].sort();
+      setYears(allYears);
     }
     fetchData();
   }, []);
@@ -86,12 +105,7 @@ export default function DataBarangPage() {
         parseInt(selectedMonth),
         parseInt(selectedYear)
       );
-      const normalized = (result as any[]).map((item) => ({
-        ...item,
-        stokAkhir: item.stokAkhir ?? item.stockAkhir,
-      })) as BahanMakananWithStockHistory[];
-
-      setHistoricData(normalized);
+      setHistoricData(result);
     }
     fetchHistoricData();
   }, [selectedMonth, selectedYear]);
@@ -233,17 +247,11 @@ export default function DataBarangPage() {
                   <SelectValue placeholder="Pilih Tahun" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Array.from(
-                    new Set(
-                      data.map((item) => new Date().getFullYear())
-                    )
-                  )
-                    .sort()
-                    .map((year) => (
-                      <SelectItem key={year} value={year.toString()}>
-                        {year}
-                      </SelectItem>
-                    ))}
+                  {years.map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <ExportModal

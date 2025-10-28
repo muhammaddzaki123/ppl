@@ -115,23 +115,23 @@ export async function getBahanMakananWithStockHistory(
   });
 
   const stockHistory = bahanMakanans.map((bahan) => {
-    let stockAkhir = bahan.stok;
+    let stokAkhir = bahan.stok;
 
     bahanMasukAfter.forEach((masuk) => {
       if (masuk.bahanMakananId === bahan.id) {
-        stockAkhir -= masuk.jumlah;
+        stokAkhir -= masuk.jumlah;
       }
     });
 
     bahanKeluarAfter.forEach((keluar) => {
       if (keluar.bahanMakananId === bahan.id) {
-        stockAkhir += keluar.jumlah;
+        stokAkhir += keluar.jumlah;
       }
     });
 
     return {
       ...bahan,
-      stockAkhir,
+      stokAkhir,
       tanggal: endDate.toISOString(),
     };
   });
