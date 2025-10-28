@@ -27,6 +27,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   onEdit?: (item: TData) => void;
   onDelete?: (item: TData) => void;
+  enableEditing?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -34,6 +35,7 @@ export function DataTable<TData, TValue>({
   data,
   onEdit,
   onDelete,
+  enableEditing = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
@@ -80,7 +82,9 @@ export function DataTable<TData, TValue>({
                     </TableHead>
                   );
                 })}
-                {(onEdit || onDelete) && <TableHead>Aksi</TableHead>}
+                {enableEditing && (onEdit || onDelete) && (
+                  <TableHead>Aksi</TableHead>
+                )}
               </TableRow>
             ))}
           </TableHeader>
@@ -99,7 +103,7 @@ export function DataTable<TData, TValue>({
                       )}
                     </TableCell>
                   ))}
-                  {(onEdit || onDelete) && (
+                  {enableEditing && (onEdit || onDelete) && (
                     <TableCell>
                       <div className="flex gap-2">
                         {onEdit && (
@@ -128,7 +132,10 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length + (onEdit || onDelete ? 1 : 0)}
+                  colSpan={
+                    columns.length +
+                    (enableEditing && (onEdit || onDelete) ? 1 : 0)
+                  }
                   className="h-24 text-center"
                 >
                   Tidak ada data.

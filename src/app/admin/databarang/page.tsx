@@ -194,14 +194,14 @@ export default function DataBarangPage() {
       },
     },
     {
-      accessorKey: "stok",
+      accessorKey: "stokAkhir",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Jumlah
+            Stok Akhir
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -322,9 +322,10 @@ export default function DataBarangPage() {
         <CardContent>
           <DataTable
             columns={columns}
-            data={data}
+            data={historicData}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            enableEditing={false}
           />
         </CardContent>
       </Card>
