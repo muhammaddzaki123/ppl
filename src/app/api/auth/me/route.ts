@@ -53,7 +53,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    return NextResponse.json({ name: admin.name, email: admin.email, role: admin.role });
+    return NextResponse.json({ name: admin.name, email: admin.email });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Failed to fetch current user' }, { status: 500 });
