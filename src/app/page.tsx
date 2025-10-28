@@ -97,9 +97,12 @@ export default function Home() {
           </div>
         </div>
 
-        <button className="bg-[#4a1c7c] hover:bg-[#6b25ac] text-white font-bold py-3 px-8 rounded-full text-lg mb-16 sm:mb-20 transition-colors duration-200">
+        <Link 
+          href="/klasifikasi"
+          className="bg-[#4a1c7c] hover:bg-[#6b25ac] text-white font-bold py-3 px-8 rounded-full text-lg mb-16 sm:mb-20 transition-colors duration-200"
+        >
           Selengkapnya
-        </button>
+        </Link>
 
       </main>
 

@@ -70,3 +70,26 @@ model BahanKeluar {
 
   @@map("bahan_keluar")
 }
+
+model Klasifikasi {
+  id                String              @id @default(uuid()) @db.Uuid
+  nama              String
+  spesifikasiBahans SpesifikasiBahan[]
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+
+  @@map("klasifikasis")
+}
+
+model SpesifikasiBahan {
+  id            String      @id @default(uuid()) @db.Uuid
+  bahan         String
+  satuan        String
+  spesifikasi   String
+  klasifikasiId String      @map("klasifikasi_id") @db.Uuid
+  klasifikasi   Klasifikasi @relation(fields: [klasifikasiId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@map("spesifikasi_bahans")
+}

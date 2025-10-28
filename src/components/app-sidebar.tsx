@@ -92,6 +92,10 @@ const data = {
           title: "Set Satuan",
           url: "/admin/settings/satuan",
         },
+        {
+          title: "Klasifikasi",
+          url: "/admin/settings/klasifikasi",
+        },
       ],
     },
   ],
