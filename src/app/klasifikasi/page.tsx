@@ -13,6 +13,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default async function KlasifikasiPage() {
   const klasifikasis = await prisma.klasifikasi.findMany({
@@ -26,9 +29,20 @@ export default async function KlasifikasiPage() {
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">
-        Spesifikasi Bahan Makanan
-      </h1>
+      <header className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold text-center">
+          Spesifikasi Bahan Makanan
+        </h1>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/">home</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/login">Login</Link>
+          </Button>
+          <ModeToggle />
+        </div>
+      </header>
 
       <div className="space-y-8">
         {klasifikasis.map((klasifikasi) => (
