@@ -6,11 +6,13 @@ import {
   addBahanMakanan,
   deleteBahanMakanan,
   getBahanMakanan,
+  getBahanMakananWithStockHistory,
   updateBahanMakanan,
 } from "@/actions/databarang";
 import { getBahanMasuk } from "@/actions/barangmasuk";
 import { getBahanKeluar } from "@/actions/barangkeluar";
 import { getSatuans } from "@/actions/satuan";
+import { ExportModal } from "@/components/admin/shared/export-modal";
 import {
   GenericForm,
   FormFieldConfig,
@@ -60,23 +62,62 @@ interface BahanMakananWithStockHistory extends BahanMakanan {
 export default function DataBarangPage() {
   const [data, setData] = React.useState<any[]>([]);
   const [satuans, setSatuans] = React.useState<any[]>([]);
+  const [historicData, setHistoricData] = React.useState<
+    BahanMakananWithStockHistory[]
+  >([]);
   const [isDialogOpen, setDialogOpen] = React.useState(false);
   const [editingItem, setEditingItem] = React.useState<BahanMakanan | null>(
     null
   );
   const [isLoading, setLoading] = React.useState(false);
+  const [selectedMonth, setSelectedMonth] = React.useState<string>(
+    (new Date().getMonth() + 1).toString()
+  );
+  const [selectedYear, setSelectedYear] = React.useState<string>(
+    new Date().getFullYear().toString()
+  );
+  const [years, setYears] = React.useState<number[]>([]);
 
   React.useEffect(() => {
     async function fetchData() {
-      const [bahanMakananData, satuanData] = await Promise.all([
+      const [
+        bahanMakananData,
+        satuanData,
+        bahanMasukData,
+        bahanKeluarData,
+      ] = await Promise.all([
         getBahanMakanan(),
         getSatuans(),
+        getBahanMasuk(),
+        getBahanKeluar(),
       ]);
       setData(bahanMakananData);
       setSatuans(satuanData);
+
+      const masukYears = bahanMasukData.map((item: any) =>
+        new Date(item.tanggalMasuk).getFullYear()
+      );
+      const keluarYears = bahanKeluarData.map((item: any) =>
+        new Date(item.tanggalKeluar).getFullYear()
+      );
+      const allYears = [...new Set([...masukYears, ...keluarYears])].sort();
+      setYears(allYears);
     }
     fetchData();
   }, []);
+
+  React.useEffect(() => {
+    async function fetchHistoricData() {
+      if (selectedMonth && selectedYear) {
+        const result = await getBahanMakananWithStockHistory(
+          parseInt(selectedMonth),
+          parseInt(selectedYear)
+        );
+        setHistoricData(result);
+      }
+    }
+    fetchHistoricData();
+  }, [selectedMonth, selectedYear]);
 
   const handleSubmit = async (formData: BahanMakananFormValues) => {
     setLoading(true);
@@ -208,34 +249,74 @@ export default function DataBarangPage() {
                 Kelola data bahan makanan Anda.
               </CardDescription>
             </div>
-            <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  onClick={() => setEditingItem(null)}
-                  className="w-full md:w-auto"
-                >
-                  Tambah Barang
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px] md:max-w-[600px]">
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingItem ? "Edit Barang" : "Tambah Barang"}
-                  </DialogTitle>
-                </DialogHeader>
-                <GenericForm<BahanMakananFormValues>
-                  schema={BahanMakananSchema}
-                  fields={formFields}
-                  onSubmit={handleSubmit}
-                  initialData={
-                    editingItem
-                      ? { ...editingItem, satuanId: editingItem.satuanId || "" }
-                      : undefined
-                  }
-                  isLoading={isLoading}
-                />
-              </DialogContent>
-            </Dialog>
+            <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row">
+              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                <SelectTrigger className="w-full md:w-[180px]">
+                  <SelectValue placeholder="Pilih Bulan" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <SelectItem key={i + 1} value={(i + 1).toString()}>
+                      {new Date(0, i).toLocaleString("default", {
+                        month: "long",
+                      })}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger className="w-full md:w-[180px]">
+                  <SelectValue placeholder="Pilih Tahun" />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <ExportModal
+                data={historicData}
+                columns={[
+                  { header: "Tanggal", accessorKey: "tanggal" },
+                  { header: "Kode", accessorKey: "kode" },
+                  { header: "Nama Barang", accessorKey: "nama" },
+                  { header: "Satuan", accessorKey: "satuan.nama" },
+                  { header: "Jumlah/Stok Akhir", accessorKey: "stokAkhir" },
+                ]}
+                fileName="data_barang"
+                dateKey="tanggal"
+              />
+              <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    onClick={() => setEditingItem(null)}
+                    className="w-full md:w-auto"
+                  >
+                    Tambah Barang
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px] md:max-w-[600px]">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {editingItem ? "Edit Barang" : "Tambah Barang"}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <GenericForm<BahanMakananFormValues>
+                    schema={BahanMakananSchema}
+                    fields={formFields}
+                    onSubmit={handleSubmit}
+                    initialData={
+                      editingItem
+                        ? { ...editingItem, satuanId: editingItem.satuanId || "" }
+                        : undefined
+                    }
+                    isLoading={isLoading}
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </CardHeader>
         <CardContent>

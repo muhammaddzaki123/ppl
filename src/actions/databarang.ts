@@ -94,3 +94,56 @@ export async function deleteBahanMakanan(id: string) {
   }
 }
 
+export async function getBahanMakananWithStockHistory(
+  month: number,
+  year: number
+) {
+  const endDate = new Date(year, month, 0, 23, 59, 59);
+
+  const bahanMakanans = await prisma.bahanMakanan.findMany({
+    include: {
+      satuan: true,
+    },
+  });
+
+  const bahanMasukAfter = await prisma.bahanMasuk.findMany({
+    where: {
+      tanggalMasuk: {
+        gt: endDate,
+      },
+    },
+  });
+
+  const bahanKeluarAfter = await prisma.bahanKeluar.findMany({
+    where: {
+      tanggalKeluar: {
+        gt: endDate,
+      },
+    },
+  });
+
+  const stockHistory = bahanMakanans.map((bahan) => {
+    let stokAkhir = bahan.stok;
+
+    bahanMasukAfter.forEach((masuk) => {
+      if (masuk.bahanMakananId === bahan.id) {
+        stokAkhir -= masuk.jumlah;
+      }
+    });
+
+    bahanKeluarAfter.forEach((keluar) => {
+      if (keluar.bahanMakananId === bahan.id) {
+        stokAkhir += keluar.jumlah;
+      }
+    });
+
+    return {
+      ...bahan,
+      stokAkhir,
+      tanggal: endDate.toISOString(),
+    };
+  });
+
+  return stockHistory;
+}
+
