@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useFormState } from "react-dom";
 import { toast } from "sonner";
 
 import { addUser, updateUser, User } from "@/actions/user";
@@ -50,7 +49,7 @@ export function UserForm({ user, onSuccess }: UserFormProps) {
   });
 
   const action = isEditing ? updateUser.bind(null, user.id) : addUser;
-  const [state, formAction] = useFormState(action, { status: "idle", message: "" });
+  const [state, formAction] = useActionState(action, { status: "idle", message: "" });
 
   useEffect(() => {
     if (state.status === "success") {

@@ -2,18 +2,9 @@ import { getUsers } from "@/actions/user";
 import { PageHeader } from "@/components/admin/page-header";
 import { DataTable } from "@/components/admin/shared/table";
 import { columns } from "@/components/admin/users/columns";
-import { UserForm } from "@/components/admin/users/user-form";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { PlusCircle } from "lucide-react";
 import { Suspense } from "react";
 import { UserTableSkeleton } from "@/components/admin/users/skeletons";
+import { AddUserDialog } from "@/components/admin/users/add-user-dialog";
 
 async function UsersTable() {
   const users = await getUsers();
@@ -26,27 +17,7 @@ export default function UsersPage() {
       <PageHeader
         title="Users"
         description="Kelola akun administrator dan peran."
-        actions={
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Tambah User
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Tambah User Baru</DialogTitle>
-              </DialogHeader>
-              <UserForm
-                onSuccess={() => {
-                  // In a real app, you might want to close the dialog here.
-                  // This can be handled with state management if DialogTrigger is not sufficient.
-                }}
-              />
-            </DialogContent>
-          </Dialog>
-        }
+        actions={<AddUserDialog />}
       />
       <Suspense fallback={<UserTableSkeleton />}>
         <UsersTable />
