@@ -115,7 +115,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid request', details: issues }, { status: 400 });
     }
 
-    const { name, email, password, role } = parsed.data;
+    const { name, email, password } = parsed.data;
 
     const existingAdmin = await prisma.admin.findUnique({
         where: { email }

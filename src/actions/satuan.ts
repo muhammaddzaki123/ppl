@@ -31,7 +31,7 @@ export async function addSatuan(formData: FormData) {
     });
     revalidatePath("/admin/settings/satuan");
     return { message: "Satuan berhasil ditambahkan" };
-  } catch (error) {
+  } catch {
     return { message: "Gagal menambahkan satuan" };
   }
 }
@@ -54,7 +54,7 @@ export async function updateSatuan(id: string, formData: FormData) {
     });
     revalidatePath("/admin/settings/satuan");
     return { message: "Satuan berhasil diubah" };
-  } catch (error) {
+  } catch {
     return { message: "Gagal mengubah satuan" };
   }
 }

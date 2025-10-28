@@ -51,7 +51,7 @@ export async function addBahanMasuk(formData: FormData) {
     revalidatePath("/admin/barangmasuk");
     revalidatePath("/admin/databarang");
     return { message: "Data berhasil ditambahkan" };
-  } catch (error) {
+  } catch {
     return { message: "Gagal menambahkan data" };
   }
 }
@@ -100,7 +100,7 @@ export async function updateBahanMasuk(id: string, formData: FormData) {
     revalidatePath("/admin/barangmasuk");
     revalidatePath("/admin/databarang");
     return { message: "Data berhasil diubah" };
-  } catch (error) {
+  } catch {
     return { message: "Gagal mengubah data" };
   }
 }
@@ -127,7 +127,7 @@ export async function deleteBahanMasuk(id: string) {
     revalidatePath("/admin/barangmasuk");
     revalidatePath("/admin/databarang");
     return { message: "Data berhasil dihapus" };
-  } catch (error) {
+  } catch {
     return { message: "Gagal menghapus data" };
   }
 }

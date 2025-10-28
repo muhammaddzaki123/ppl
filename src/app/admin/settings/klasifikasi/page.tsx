@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { CreateKlasifikasiForm } from "@/components/admin/klasifikasi/create-klasifikasi-form";
 import { KlasifikasiList } from "@/components/admin/klasifikasi/klasifikasi-list";
 

@@ -27,92 +27,105 @@ interface MultiSelectProps {
 const MultiSelect = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
   MultiSelectProps
->(({ options, onValueChange, defaultValue = [], placeholder = "Pilih...", className }, ref) => {
-  const [selectedValues, setSelectedValues] = React.useState<string[]>(defaultValue);
-  const [isOpen, setIsOpen] = React.useState(false);
+>(
+  (
+    {
+      options,
+      onValueChange,
+      defaultValue = [],
+      placeholder = "Pilih...",
+      className,
+    },
+    ref
+  ) => {
+    const [selectedValues, setSelectedValues] =
+      React.useState<string[]>(defaultValue);
+    const [isOpen, setIsOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    onValueChange(selectedValues);
-  }, [selectedValues, onValueChange]);
+    React.useEffect(() => {
+      onValueChange(selectedValues);
+    }, [selectedValues, onValueChange]);
 
-  const handleSelect = (value: string) => {
-    setSelectedValues((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
-    );
-  };
+    const handleSelect = (value: string) => {
+      setSelectedValues((prev) =>
+        prev.includes(value)
+          ? prev.filter((v) => v !== value)
+          : [...prev, value]
+      );
+    };
 
-  const getSelectedLabels = () => {
-    if (selectedValues.length === 0) return placeholder;
-    return options
-      .filter((option) => selectedValues.includes(option.value))
-      .map((option) => option.label)
-      .join(", ");
-  };
+    const getSelectedLabels = () => {
+      if (selectedValues.length === 0) return placeholder;
+      return options
+        .filter((option) => selectedValues.includes(option.value))
+        .map((option) => option.label)
+        .join(", ");
+    };
 
-  return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={isOpen}
-          className={cn("w-full justify-between", className)}
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <span className="truncate">{getSelectedLabels()}</span>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[250px] p-0">
-        <Command>
-          <CommandList>
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  onSelect={() => handleSelect(option.value)}
-                  className="cursor-pointer"
-                >
-                  <Checkbox
-                    checked={selectedValues.includes(option.value)}
-                    className="mr-2"
-                  />
-                  {option.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-        {selectedValues.length > 0 && (
-          <div className="p-2 border-t">
-            <div className="flex flex-wrap gap-1">
-              {selectedValues.map((value) => {
-                const option = options.find((o) => o.value === value);
-                return (
-                  <Badge
-                    key={value}
-                    variant="secondary"
-                    className="flex items-center gap-1"
+    return (
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={isOpen}
+            className={cn("w-full justify-between", className)}
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <span className="truncate">{getSelectedLabels()}</span>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[250px] p-0">
+          {/* 2. Teruskan 'ref' ke komponen Command */}
+          <Command ref={ref}>
+            <CommandList>
+              <CommandGroup>
+                {options.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    onSelect={() => handleSelect(option.value)}
+                    className="cursor-pointer"
                   >
-                    {option?.label}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent dropdown from closing
-                        handleSelect(value);
-                      }}
+                    <Checkbox
+                      checked={selectedValues.includes(option.value)}
+                      className="mr-2"
                     />
-                  </Badge>
-                );
-              })}
+                    {option.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+          {selectedValues.length > 0 && (
+            <div className="p-2 border-t">
+              <div className="flex flex-wrap gap-1">
+                {selectedValues.map((value) => {
+                  const option = options.find((o) => o.value === value);
+                  return (
+                    <Badge
+                      key={value}
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
+                      {option?.label}
+                      <X
+                        className="h-3 w-3 cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelect(value);
+                        }}
+                      />
+                    </Badge>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        )}
-      </PopoverContent>
-    </Popover>
-  );
-});
+          )}
+        </PopoverContent>
+      </Popover>
+    );
+  }
+);
 
 MultiSelect.displayName = "MultiSelect";
 

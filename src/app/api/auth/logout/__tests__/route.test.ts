@@ -1,14 +1,8 @@
 import { POST } from '../route';
-import { NextRequest } from 'next/server';
 import { AUTH_COOKIE_NAME } from '@/lib/auth';
 
 describe('API /auth/logout', () => {
   it('should return 200 and a cookie-clearing header', async () => {
-    // Arrange
-    const request = new NextRequest('http://localhost/api/auth/logout', {
-      method: 'POST',
-    });
-
     // Act
     const response = await POST();
     const body = await response.json();

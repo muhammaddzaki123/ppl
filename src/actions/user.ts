@@ -25,6 +25,12 @@ const UpdatePasswordSchema = z
     path: ["confirmPassword"],
   });
 
+export type State<T = Record<string, string[] | undefined>> = {
+  status: string;
+  message: string;
+  errors?: T;
+};
+
 export async function getUsers() {
   try {
     const users = await prisma.admin.findMany({
@@ -45,7 +51,7 @@ export async function getUsers() {
 
 export type User = Prisma.PromiseReturnType<typeof getUsers>[number];
 
-export async function addUser(prevState: any, formData: FormData) {
+export async function addUser(prevState: State, formData: FormData) {
   const validatedFields = AddUserSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
@@ -93,7 +99,7 @@ export async function addUser(prevState: any, formData: FormData) {
   }
 }
 
-export async function updateUser(id: string, prevState: any, formData: FormData) {
+export async function updateUser(id: string, prevState: State, formData: FormData) {
   const validatedFields = UserSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
@@ -139,7 +145,7 @@ export async function updateUser(id: string, prevState: any, formData: FormData)
   }
 }
 
-export async function updatePassword(id: string, prevState: any, formData: FormData) {
+export async function updatePassword(id: string, prevState: State, formData: FormData) {
   const validatedFields = UpdatePasswordSchema.safeParse(
     Object.fromEntries(formData.entries())
   );

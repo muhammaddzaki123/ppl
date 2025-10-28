@@ -50,7 +50,7 @@ export async function updateAdminProfile(formData: FormData) {
     });
     revalidatePath("/admin/profile");
     return { message: "Profil berhasil diperbarui" };
-  } catch (error) {
+  } catch {
     return { message: "Gagal memperbarui profil" };
   }
 }
@@ -97,7 +97,7 @@ export async function changePassword(formData: FormData) {
       data: { password: hashedPassword },
     });
     return { message: "Kata sandi berhasil diubah" };
-  } catch (error) {
+  } catch {
     return { message: "Gagal mengubah kata sandi" };
   }
 }

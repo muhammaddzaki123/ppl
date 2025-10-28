@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import {
   ArrowRight,
-  Calendar,
   ShoppingCart,
   FileText,
   Package,

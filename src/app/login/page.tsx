@@ -1,6 +1,7 @@
 import { LoginForm } from "@/components/login-form";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -9,7 +10,13 @@ export default function LoginPage() {
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <header className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-medium text-xl">
-            <img src="/logo.png" alt="Logo" className="size-10" />
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={40}
+              height={40}
+              className="size-10"
+            />
             HepiBite
           </Link>
           <div className="flex items-center gap-2">
@@ -26,9 +33,11 @@ export default function LoginPage() {
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
-        <img
-          src="login.jpg"
+        <Image
+          src="/login.jpg"
           alt="Image"
+          layout="fill"
+          objectFit="cover"
           className="absolute inset-0 h-full w-full"
         />
       </div>

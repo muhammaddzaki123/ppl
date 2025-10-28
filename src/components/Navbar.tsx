@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,13 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
           <span className="rounded-full bg-gradient-to-tr from-primary/60 to-secondary/60 p-2 shadow-md">
-            <img src="/globe.svg" alt="Logo" width={28} height={28} className="transition-transform group-hover:scale-110" />
+            <Image
+              src="/globe.svg"
+              alt="Logo"
+              width={28}
+              height={28}
+              className="transition-transform group-hover:scale-110"
+            />
           </span>
           <span className="font-bold text-xl text-primary tracking-tight drop-shadow-sm">HepiBite</span>
         </Link>

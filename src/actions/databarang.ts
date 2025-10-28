@@ -43,7 +43,7 @@ export async function addBahanMakanan(formData: FormData) {
     });
     revalidatePath("/admin/databarang");
     return { message: "Data berhasil ditambahkan" };
-  } catch (error) {
+  } catch {
     return { message: "Gagal menambahkan data" };
   }
 }
@@ -68,7 +68,7 @@ export async function updateBahanMakanan(id: string, formData: FormData) {
     });
     revalidatePath("/admin/databarang");
     return { message: "Data berhasil diubah" };
-  } catch (error) {
+  } catch {
     return { message: "Gagal mengubah data" };
   }
 }

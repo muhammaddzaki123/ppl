@@ -42,8 +42,10 @@ export function LoginForm({
         router.replace(next);
         router.refresh();
       }
-    } catch (err: any) {
-      setError(err.message || "Unexpected error");
+    } catch (err) {
+      setError(
+        (err instanceof Error && err.message) || "Unexpected error"
+      );
     } finally {
       setLoading(false);
     }

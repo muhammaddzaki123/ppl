@@ -17,7 +17,6 @@ import {
   GenericForm,
   FormFieldConfig,
 } from "@/components/admin/shared/form";
-import { Combobox } from "@/components/ui/combobox";
 import { DataTable } from "@/components/admin/shared/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,7 +59,6 @@ interface BahanMakananWithStockHistory extends BahanMakanan {
 }
 
 export default function DataBarangPage() {
-  const [data, setData] = React.useState<any[]>([]);
   const [satuans, setSatuans] = React.useState<any[]>([]);
   const [historicData, setHistoricData] = React.useState<
     BahanMakananWithStockHistory[]
@@ -78,20 +76,23 @@ export default function DataBarangPage() {
   );
   const [years, setYears] = React.useState<number[]>([]);
 
+  const fetchHistoricData = React.useCallback(async () => {
+    if (selectedMonth && selectedYear) {
+      const result = await getBahanMakananWithStockHistory(
+        parseInt(selectedMonth),
+        parseInt(selectedYear)
+      );
+      setHistoricData(result);
+    }
+  }, [selectedMonth, selectedYear]);
+
   React.useEffect(() => {
     async function fetchData() {
-      const [
-        bahanMakananData,
-        satuanData,
-        bahanMasukData,
-        bahanKeluarData,
-      ] = await Promise.all([
-        getBahanMakanan(),
+      const [satuanData, bahanMasukData, bahanKeluarData] = await Promise.all([
         getSatuans(),
         getBahanMasuk(),
         getBahanKeluar(),
       ]);
-      setData(bahanMakananData);
       setSatuans(satuanData);
 
       const masukYears = bahanMasukData.map((item: any) =>
@@ -104,20 +105,8 @@ export default function DataBarangPage() {
       setYears(allYears);
     }
     fetchData();
-  }, []);
-
-  React.useEffect(() => {
-    async function fetchHistoricData() {
-      if (selectedMonth && selectedYear) {
-        const result = await getBahanMakananWithStockHistory(
-          parseInt(selectedMonth),
-          parseInt(selectedYear)
-        );
-        setHistoricData(result);
-      }
-    }
     fetchHistoricData();
-  }, [selectedMonth, selectedYear]);
+  }, [fetchHistoricData]);
 
   const handleSubmit = async (formData: BahanMakananFormValues) => {
     setLoading(true);
@@ -132,8 +121,7 @@ export default function DataBarangPage() {
       await addBahanMakanan(dataToSend);
     }
 
-    const result = await getBahanMakanan();
-    setData(result);
+    await fetchHistoricData();
     setLoading(false);
     setDialogOpen(false);
     setEditingItem(null);
@@ -146,8 +134,7 @@ export default function DataBarangPage() {
 
   const handleDelete = async (item: BahanMakanan) => {
     await deleteBahanMakanan(item.id);
-    const result = await getBahanMakanan();
-    setData(result);
+    await fetchHistoricData();
   };
 
   const columns: ColumnDef<BahanMakanan>[] = [
