@@ -67,8 +67,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
-    const token = await signToken({ sub: String(admin.id), email: admin.email, role: admin.role });
-    const res = NextResponse.json({ name: admin.name, email: admin.email, role: admin.role });
+    const token = await signToken({ sub: String(admin.id), email: admin.email });
+    const res = NextResponse.json({ name: admin.name, email: admin.email });
     setAuthCookieOnResponse(res, token);
     return res;
   } catch (error) {

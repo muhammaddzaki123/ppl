@@ -16,7 +16,6 @@ export function getSecret(): Uint8Array {
 export type JwtPayload = {
   sub: string; // admin id as string
   email: string;
-  role: 'ADMIN' | 'SUPER_ADMIN';
 };
 
 export async function signToken(payload: JwtPayload, expiresIn = '7d') {
@@ -32,9 +31,9 @@ export async function signToken(payload: JwtPayload, expiresIn = '7d') {
 export async function verifyToken(token: string): Promise<JwtPayload | null> {
   try {
     const { payload } = await jwtVerify(token, getSecret());
-    const { sub, email, role } = payload as any;
-    if (!sub || !email || !role) return null;
-    return { sub: String(sub), email: String(email), role: role as any };
+    const { sub, email } = payload as any;
+    if (!sub || !email) return null;
+    return { sub: String(sub), email: String(email) };
   } catch {
     return null;
   }
