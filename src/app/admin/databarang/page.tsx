@@ -5,7 +5,6 @@ import { z } from "zod";
 import {
   addBahanMakanan,
   deleteBahanMakanan,
-  getBahanMakanan,
   getBahanMakananWithStockHistory,
   updateBahanMakanan,
 } from "@/actions/databarang";
@@ -312,7 +311,6 @@ export default function DataBarangPage() {
             data={historicData}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            enableEditing={false}
           />
         </CardContent>
       </Card>

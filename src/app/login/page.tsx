@@ -3,6 +3,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react"; // 1. Impor Suspense
 
 export default function LoginPage() {
   return (
@@ -28,17 +29,20 @@ export default function LoginPage() {
         </header>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <LoginForm />
+            {/* 2. Bungkus LoginForm dengan Suspense */}
+            <Suspense fallback={<div>Loading...</div>}>
+              <LoginForm />
+            </Suspense>
           </div>
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
+        {/* 3. Perbarui properti Image (opsional tapi disarankan) */}
         <Image
           src="/login.jpg"
           alt="Image"
-          layout="fill"
-          objectFit="cover"
-          className="absolute inset-0 h-full w-full"
+          fill
+          className="object-cover"
         />
       </div>
     </div>
