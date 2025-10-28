@@ -310,7 +310,7 @@ export default function DataBarangPage() {
                     initialData={
                       editingItem
                         ? { ...editingItem, satuanId: editingItem.satuanId || "" }
-                        : undefined
+                        : { kode: "", nama: "", satuanId: "", stok: 0 }
                     }
                     isLoading={isLoading}
                   />
