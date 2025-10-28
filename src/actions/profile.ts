@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth"; // Asumsi Anda memiliki sistem otentikasi
+import { auth } from "./auth";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();

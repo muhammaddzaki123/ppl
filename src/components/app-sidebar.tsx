@@ -79,7 +79,7 @@ const data = {
     },
     {
       title: "Profil",
-      url: "/admin/profil",
+      url: "/admin/profile",
       icon: User,
       items: undefined,
     },
