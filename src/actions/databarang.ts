@@ -89,3 +89,52 @@ export async function deleteBahanMakanan(id: string) {
     return { message: "Gagal menghapus data" };
   }
 }
+
+export async function getBahanMakananWithStockHistory(
+  month: number,
+  year: number
+) {
+  const endDate = new Date(year, month, 0, 23, 59, 59);
+
+  const bahanMakanans = await prisma.bahanMakanan.findMany();
+
+  const bahanMasukAfter = await prisma.bahanMasuk.findMany({
+    where: {
+      tanggalMasuk: {
+        gt: endDate,
+      },
+    },
+  });
+
+  const bahanKeluarAfter = await prisma.bahanKeluar.findMany({
+    where: {
+      tanggalKeluar: {
+        gt: endDate,
+      },
+    },
+  });
+
+  const stockHistory = bahanMakanans.map((bahan) => {
+    let stockAkhir = bahan.stok;
+
+    bahanMasukAfter.forEach((masuk) => {
+      if (masuk.bahanMakananId === bahan.id) {
+        stockAkhir -= masuk.jumlah;
+      }
+    });
+
+    bahanKeluarAfter.forEach((keluar) => {
+      if (keluar.bahanMakananId === bahan.id) {
+        stockAkhir += keluar.jumlah;
+      }
+    });
+
+    return {
+      ...bahan,
+      stockAkhir,
+      tanggal: endDate.toISOString(),
+    };
+  });
+
+  return stockHistory;
+}
