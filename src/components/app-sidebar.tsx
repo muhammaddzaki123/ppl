@@ -9,6 +9,7 @@ import {
   PackagePlus,
   PackageMinus,
   Users,
+  Settings,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -81,6 +82,17 @@ const data = {
       url: "/admin/profil",
       icon: User,
       items: undefined,
+    },
+    {
+      title: "Settings",
+      url: "/admin/settings",
+      icon: Settings,
+      items: [
+        {
+          title: "Set Satuan",
+          url: "/admin/settings/satuan",
+        },
+      ],
     },
   ],
 };

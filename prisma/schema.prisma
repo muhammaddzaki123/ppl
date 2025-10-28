@@ -28,14 +28,25 @@ model BahanMakanan {
   id        String   @id @default(uuid()) @db.Uuid
   kode      String   @unique
   nama      String
-  satuan    String
   stok      Int      @default(0)
   masuk     BahanMasuk[]
   keluar    BahanKeluar[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  satuanId  String?  @map("satuan_id") @db.Uuid
+  satuan    Satuan?  @relation(fields: [satuanId], references: [id], onDelete: Restrict)
 
   @@map("bahan_makanan")
+}
+
+model Satuan {
+  id            String         @id @default(uuid()) @db.Uuid
+  nama          String         @unique
+  bahanMakanans BahanMakanan[]
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  @@map("satuans")
 }
 
 model BahanMasuk {

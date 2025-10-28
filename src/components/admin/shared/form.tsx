@@ -21,12 +21,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 
 export interface FormFieldConfig<TFormValues extends FieldValues> {
   name: Path<TFormValues>;
   label: string;
   type: string;
   placeholder?: string;
+  options?: { value: string; label: string }[];
+  searchPlaceholder?: string;
+  noResultsMessage?: string;
 }
 
 interface GenericFormProps<TFormValues extends FieldValues> {
@@ -73,18 +77,28 @@ export function GenericForm<TFormValues extends FieldValues>({
                 <FormItem>
                   <FormLabel>{fieldConfig.label}</FormLabel>
                   <FormControl>
-                    <Input
-                      type={fieldConfig.type}
-                      placeholder={fieldConfig.placeholder}
-                      {...field}
-                      value={
-                        field.value as
-                          | string
-                          | number
-                          | readonly string[]
-                          | undefined
-                      }
-                    />
+                    {fieldConfig.type === "combobox" ? (
+                      <Combobox
+                        options={fieldConfig.options || []}
+                        {...field}
+                        placeholder={fieldConfig.placeholder}
+                        searchPlaceholder={fieldConfig.searchPlaceholder}
+                        noResultsMessage={fieldConfig.noResultsMessage}
+                      />
+                    ) : (
+                      <Input
+                        type={fieldConfig.type}
+                        placeholder={fieldConfig.placeholder}
+                        {...field}
+                        value={
+                          field.value as
+                            | string
+                            | number
+                            | readonly string[]
+                            | undefined
+                        }
+                      />
+                    )}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
