@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { CreateKlasifikasiForm } from "@/components/admin/klasifikasi/create-klasifikasi-form";
 import { KlasifikasiList } from "@/components/admin/klasifikasi/klasifikasi-list";
-
+export const dynamic = "force-dynamic";
 export default async function KlasifikasiPage() {
   const klasifikasis = await prisma.klasifikasi.findMany({
     include: {
