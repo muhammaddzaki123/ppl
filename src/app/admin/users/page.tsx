@@ -1,3 +1,5 @@
+"use client";
+
 import { getUsers } from "@/actions/user";
 import { PageHeader } from "@/components/admin/page-header";
 import { DataTable } from "@/components/admin/shared/table";

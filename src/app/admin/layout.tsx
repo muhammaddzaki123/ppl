@@ -1,3 +1,5 @@
+"use client";
+
 import { getUserSession } from "@/lib/get-user-session";
 import AdminClientLayout from "./admin-client-layout";
 import React from "react";
