@@ -26,14 +26,14 @@ services:
     container_name: rsinvectory-app-prod
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - AUTH_SECRET=${AUTH_SECRET}
       - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL}
       - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD}
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=3001
     depends_on:
       postgres:
         condition: service_healthy
