@@ -20,7 +20,7 @@ export default function Home() {
             priority
           />
           <div>
-            <p className="text-sm font-semibold">RSUD Moh. Roslan Kota Mataram</p>
+            <p className="text-sm font-semibold">RSUD H Moh. Roslan Kota Mataram</p>
             <p className="text-xs">RS Umum Moh. Roslan</p>
           </div>
         </div>
@@ -52,7 +52,7 @@ export default function Home() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
             e-Stok Gizi RSUD
             <br />
-            Moh. Ruslan Kota Mataram 
+            H Moh. Ruslan Kota Mataram 
           </h1>
           <p className="text-base sm:text-lg leading-relaxed">
             e-Stok Gizi adalah sistem informasi yang membantu
