@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HepiBite",
+  title: "rs-gizi-invectory",
   description: "Your personal food diary",
 };
 

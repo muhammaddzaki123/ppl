@@ -41,13 +41,7 @@ export async function middleware(req: NextRequest) {
 
   // Decide if this API request should be protected
   const protectApi =
-    pathname.startsWith('/api/admin/') ||
-    pathname.startsWith('/api/admins') ||
-    pathname.startsWith('/api/categories') ||
-    pathname.startsWith('/api/deliveries') ||
-    pathname.startsWith('/api/vouchers') ||
-    (pathname.startsWith('/api/products') && method !== 'GET') ||
-    pathname.startsWith('/api/orders');
+    pathname.startsWith('/api/admins') || pathname.startsWith('/api/upload');
 
   if (!protectApi) return NextResponse.next();
 

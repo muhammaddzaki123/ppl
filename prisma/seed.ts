@@ -12,7 +12,7 @@ async function main() {
     const password = await bcrypt.hash(defaultPassword, 10);
     await prisma.admin.create({
       data: {
-        name: 'Admin', // Default name is set to 'Admin'
+        name: 'Admin',
         email: defaultEmail,
         password,
       },
