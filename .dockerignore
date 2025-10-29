@@ -1,0 +1,10 @@
+# Docker-specific ignores
+.git
+.gitignore
+.dockerignore
+node_modules
+
+# Build cache
+tsconfig.tsbuildinfo
+.swc/
+.next/
