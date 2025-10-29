@@ -68,12 +68,8 @@ export default function BarangMasukPage() {
   const [editingItem, setEditingItem] =
     React.useState<BahanMasukWithRelations | null>(null);
   const [isLoading, setLoading] = React.useState(false);
-  const [selectedMonth, setSelectedMonth] = React.useState<string>(
-    (new Date().getMonth() + 1).toString()
-  );
-  const [selectedYear, setSelectedYear] = React.useState<string>(
-    new Date().getFullYear().toString()
-  );
+  const [selectedMonth, setSelectedMonth] = React.useState<string>("");
+  const [selectedYear, setSelectedYear] = React.useState<string>("");
 
   const form = useForm<BahanMasukFormValues>({
     resolver: zodResolver(BahanMasukSchema) as unknown as Resolver<
@@ -203,12 +199,18 @@ export default function BarangMasukPage() {
     new Set(data.map((item) => new Date(item.tanggalMasuk).getFullYear()))
   ).sort();
 
+  const handleResetFilter = () => {
+    setSelectedMonth("");
+    setSelectedYear("");
+  };
+
   const filteredData = data.filter((item) => {
     const itemDate = new Date(item.tanggalMasuk);
-    return (
-      itemDate.getMonth() + 1 === parseInt(selectedMonth) &&
-      itemDate.getFullYear() === parseInt(selectedYear)
-    );
+    const monthMatch =
+      !selectedMonth || itemDate.getMonth() + 1 === parseInt(selectedMonth);
+    const yearMatch =
+      !selectedYear || itemDate.getFullYear() === parseInt(selectedYear);
+    return monthMatch && yearMatch;
   });
 
   return (
@@ -249,6 +251,15 @@ export default function BarangMasukPage() {
                   ))}
                 </SelectContent>
               </Select>
+              {(selectedMonth || selectedYear) && (
+                <Button
+                  variant="outline"
+                  onClick={handleResetFilter}
+                  className="w-full md:w-auto"
+                >
+                  Hapus Filter
+                </Button>
+              )}
               <ExportModal
                 data={data}
                 columns={[

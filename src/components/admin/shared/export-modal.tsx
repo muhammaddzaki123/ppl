@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -33,7 +32,9 @@ export function ExportModal<TData>({
   dateKey,
 }: ExportModalProps<TData>) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedMonths, setSelectedMonths] = React.useState<string[]>([]);
+  const [selectedMonth, setSelectedMonth] = React.useState<string>(
+    (new Date().getMonth() + 1).toString()
+  );
   const [selectedYear, setSelectedYear] = React.useState<string>(
     new Date().getFullYear().toString()
   );
@@ -43,15 +44,16 @@ export function ExportModal<TData>({
   ).sort();
 
   const filteredData = React.useMemo(() => {
+    if (!selectedMonth || !selectedYear) {
+      return [];
+    }
     return data.filter((item) => {
       const itemDate = new Date(item[dateKey] as any);
       const itemMonth = (itemDate.getMonth() + 1).toString();
       const itemYear = itemDate.getFullYear().toString();
-      return (
-        selectedMonths.includes(itemMonth) && itemYear === selectedYear
-      );
+      return itemMonth === selectedMonth && itemYear === selectedYear;
     });
-  }, [data, selectedMonths, selectedYear, dateKey]);
+  }, [data, selectedMonth, selectedYear, dateKey]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -64,18 +66,20 @@ export function ExportModal<TData>({
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="flex flex-col items-center gap-4 md:flex-row">
-            <MultiSelect
-              options={Array.from({ length: 12 }, (_, i) => ({
-                value: (i + 1).toString(),
-                label: new Date(0, i).toLocaleString("id-ID", {
-                  month: "long",
-                }),
-              }))}
-              onValueChange={setSelectedMonths}
-              defaultValue={selectedMonths}
-              placeholder="Pilih Bulan"
-              className="w-full flex-1"
-            />
+            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+              <SelectTrigger className="w-full flex-1">
+                <SelectValue placeholder="Pilih Bulan" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from({ length: 12 }, (_, i) => (
+                  <SelectItem key={i} value={(i + 1).toString()}>
+                    {new Date(0, i).toLocaleString("id-ID", {
+                      month: "long",
+                    })}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={selectedYear} onValueChange={setSelectedYear}>
               <SelectTrigger className="w-full md:w-[120px]">
                 <SelectValue placeholder="Pilih Tahun" />
@@ -93,6 +97,7 @@ export function ExportModal<TData>({
             data={filteredData}
             columns={columns}
             fileName={fileName}
+            dateKey={dateKey}
           />
         </div>
       </DialogContent>

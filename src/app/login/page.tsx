@@ -18,7 +18,6 @@ export default function LoginPage() {
               height={40}
               className="size-10"
             />
-            HepiBite
           </Link>
           <div className="flex items-center gap-2">
             <Button variant="outline" asChild>

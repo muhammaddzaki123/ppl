@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
+import { formatDate } from "@/lib/utils";
 
 interface ExportButtonsProps<TData> {
   data: TData[];
   columns: { header: string; accessorKey: string }[];
   fileName: string;
+  dateKey: keyof TData;
 }
 
 const resolvePath = (obj: any, path: string) => {
@@ -19,11 +21,18 @@ export function ExportButtons<TData>({
   data,
   columns,
   fileName,
+  dateKey,
 }: ExportButtonsProps<TData>) {
   const handleExportPDF = () => {
     const doc = new jsPDF();
     const tableData = data.map((row) =>
-      columns.map((col) => resolvePath(row, col.accessorKey))
+      columns.map((col) => {
+        const value = resolvePath(row, col.accessorKey);
+        if (col.accessorKey === dateKey) {
+          return formatDate(value);
+        }
+        return value;
+      })
     );
     const tableHeaders = columns.map((col) => col.header);
 
@@ -39,7 +48,12 @@ export function ExportButtons<TData>({
     const excelData = data.map((row) => {
       const newRow: { [key: string]: any } = {};
       columns.forEach((col) => {
-        newRow[col.header] = resolvePath(row, col.accessorKey);
+        const value = resolvePath(row, col.accessorKey);
+        if (col.accessorKey === dateKey) {
+          newRow[col.header] = formatDate(value);
+        } else {
+          newRow[col.header] = value;
+        }
       });
       return newRow;
     });
@@ -56,7 +70,13 @@ export function ExportButtons<TData>({
       .map(
         (row) =>
           `<tr>${columns
-            .map((col) => `<td>${resolvePath(row, col.accessorKey)}</td>`)
+            .map((col) => {
+              const value = resolvePath(row, col.accessorKey);
+              if (col.accessorKey === dateKey) {
+                return `<td>${formatDate(value)}</td>`;
+              }
+              return `<td>${value}</td>`;
+            })
             .join("")}</tr>`
       )
       .join("");

@@ -31,6 +31,9 @@ export function AddUserDialog() {
         <DialogHeader>
           <DialogTitle>Tambah User Baru</DialogTitle>
         </DialogHeader>
+        {/* UserForm akan memanggil Server Action,
+            dan Server Action yang akan memanggil revalidatePath.
+            Setelah selesai, UserForm akan memanggil onSuccess. */}
         <UserForm onSuccess={handleSuccess} />
       </DialogContent>
     </Dialog>
