@@ -11,6 +11,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command";
 import {
   Popover,
@@ -52,15 +53,16 @@ export function Combobox({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="w-full p-0" side="bottom" sideOffset={4}>
         <Command>
           <CommandInput placeholder={searchPlaceholder} />
           <CommandEmpty>{noResultsMessage}</CommandEmpty>
-          <CommandGroup>
-            {options.map((option) => (
-              <CommandItem
-                key={option.value}
-                value={option.label}
+          <CommandList>
+            <CommandGroup>
+              {options.map((option) => (
+                <CommandItem
+                  key={option.value}
+                  value={option.label}
                 onSelect={(currentLabel) => {
                   const selectedOption = options.find(
                     (opt) => opt.label.toLowerCase() === currentLabel.toLowerCase()
@@ -82,7 +84,8 @@ export function Combobox({
                 {option.label}
               </CommandItem>
             ))}
-          </CommandGroup>
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
