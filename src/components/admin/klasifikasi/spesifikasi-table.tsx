@@ -3,6 +3,13 @@
 import { deleteSpesifikasi } from "@/actions/klasifikasi";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Table,
   TableBody,
   TableCell,
@@ -11,7 +18,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { SpesifikasiBahan } from "@prisma/client";
-import { Trash } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
+import { useState } from "react";
+import { EditSpesifikasiForm } from "./edit-spesifikasi-form";
 
 interface SpesifikasiTableProps {
   spesifikasis: SpesifikasiBahan[];
@@ -35,21 +44,57 @@ export function SpesifikasiTable({ spesifikasis }: SpesifikasiTableProps) {
       </TableHeader>
       <TableBody>
         {spesifikasis.map((spesifikasi, index) => (
-          <TableRow key={spesifikasi.id}>
-            <TableCell>{index + 1}</TableCell>
-            <TableCell>{spesifikasi.bahan}</TableCell>
-            <TableCell>{spesifikasi.satuan}</TableCell>
-            <TableCell>{spesifikasi.spesifikasi}</TableCell>
-            <TableCell>
-              <form action={deleteSpesifikasi.bind(null, spesifikasi.id)}>
-                <Button variant="destructive" size="icon">
-                  <Trash className="h-4 w-4" />
-                </Button>
-              </form>
-            </TableCell>
-          </TableRow>
+          <SpesifikasiTableRow
+            key={spesifikasi.id}
+            spesifikasi={spesifikasi}
+            index={index}
+          />
         ))}
       </TableBody>
     </Table>
+  );
+}
+
+function SpesifikasiTableRow({
+  spesifikasi,
+  index,
+}: {
+  spesifikasi: SpesifikasiBahan;
+  index: number;
+}) {
+  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
+
+  return (
+    <TableRow>
+      <TableCell>{index + 1}</TableCell>
+      <TableCell>{spesifikasi.bahan}</TableCell>
+      <TableCell>{spesifikasi.satuan}</TableCell>
+      <TableCell>{spesifikasi.spesifikasi}</TableCell>
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <Dialog open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Spesifikasi</DialogTitle>
+              </DialogHeader>
+              <EditSpesifikasiForm
+                spesifikasi={spesifikasi}
+                onFormSubmit={() => setEditDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+          <form action={deleteSpesifikasi.bind(null, spesifikasi.id)}>
+            <Button variant="destructive" size="icon">
+              <Trash className="h-4 w-4" />
+            </Button>
+          </form>
+        </div>
+      </TableCell>
+    </TableRow>
   );
 }

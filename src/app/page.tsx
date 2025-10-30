@@ -20,8 +20,8 @@ export default function Home() {
             priority
           />
           <div>
-            <p className="text-sm font-semibold">RSUD H Moh. Roslan Kota Mataram</p>
-            <p className="text-xs">RS Umum Moh. Roslan</p>
+            <p className="text-sm font-semibold">RSUD H Moh. Roslan</p>
+            <p className="text-xs">Kota Mataram</p>
           </div>
         </div>
 

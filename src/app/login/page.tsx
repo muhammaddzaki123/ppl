@@ -11,13 +11,19 @@ export default function LoginPage() {
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <header className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-medium text-xl">
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={40}
-              height={40}
-              className="size-10"
-            />
+            <div className="flex items-center">
+                <Image
+                  src="/logo.png" 
+                  alt="RSUD Moh. Roslan Kota Mataram Logo"
+                  width={50}
+                  height={50}
+                  priority
+                />
+                  <div>
+                    <p className="text-sm font-semibold">RSUD H Moh. Roslan</p>
+                    <p className="text-xs">Kota Mataram</p>
+                  </div>
+              </div>
           </Link>
           <div className="flex items-center gap-2">
             <Button variant="outline" asChild>

@@ -83,7 +83,7 @@ export function DataTable<TData, TValue>({
                   );
                 })}
                 {enableEditing && (onEdit || onDelete) && (
-                  <TableHead>Aksi</TableHead>
+                  <TableHead className="text-center">Aksi</TableHead>
                 )}
               </TableRow>
             ))}
@@ -105,7 +105,7 @@ export function DataTable<TData, TValue>({
                   ))}
                   {enableEditing && (onEdit || onDelete) && (
                     <TableCell>
-                      <div className="flex gap-2">
+                      <div className="flex justify-center gap-2">
                         {onEdit && (
                           <Button
                             variant="outline"
