@@ -47,7 +47,7 @@ const BahanMakananSchema = z.object({
   kode: z.string().min(1, "Kode tidak boleh kosong"),
   nama: z.string().min(1, "Nama tidak boleh kosong"),
   satuanId: z.string().min(1, "Satuan tidak boleh kosong"),
-  stok: z.coerce.number().int().min(0, "Stok tidak boleh negatif"),
+  stok: z.coerce.number().min(0, "Stok tidak boleh negatif"),
 });
 
 type BahanMakananFormValues = z.infer<typeof BahanMakananSchema>;
@@ -219,7 +219,8 @@ export default function DataBarangPage() {
             name: "stok" as const,
             label: "Jumlah",
             type: "number",
-            placeholder: "Contoh: 10",
+            placeholder: "Contoh: 10.5",
+            step: "any",
           },
         ]),
   ];
@@ -263,7 +264,7 @@ export default function DataBarangPage() {
                 </SelectContent>
               </Select>
               <ExportModal
-                data={historicData}
+                data={[...historicData].sort((a, b) => a.kode.localeCompare(b.kode))}
                 columns={[
                   { header: "Tanggal", accessorKey: "tanggal" },
                   { header: "Kode", accessorKey: "kode" },

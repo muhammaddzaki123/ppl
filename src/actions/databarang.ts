@@ -10,7 +10,7 @@ const BahanMakananSchema = z.object({
   kode: z.string().min(1, "Kode tidak boleh kosong"),
   nama: z.string().min(1, "Nama tidak boleh kosong"),
   satuanId: z.string().min(1, "Satuan tidak boleh kosong"),
-  stok: z.coerce.number().int().min(0, "Stok tidak boleh negatif"),
+  stok: z.coerce.number().min(0, "Stok tidak boleh negatif"),
 });
 
 const UpdateBahanMakananSchema = BahanMakananSchema.omit({ stok: true });

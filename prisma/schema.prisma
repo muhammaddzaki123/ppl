@@ -28,7 +28,7 @@ model BahanMakanan {
   id        String   @id @default(uuid()) @db.Uuid
   kode      String   @unique
   nama      String
-  stok      Int      @default(0)
+  stok      Float    @default(0)
   masuk     BahanMasuk[]
   keluar    BahanKeluar[]
   createdAt DateTime @default(now()) @map("created_at")
@@ -53,7 +53,7 @@ model BahanMasuk {
   id             String      @id @default(uuid()) @db.Uuid
   bahanMakananId String      @map("bahan_makanan_id") @db.Uuid
   bahanMakanan   BahanMakanan @relation(fields: [bahanMakananId], references: [id])
-  jumlah         Int
+  jumlah         Float
   tanggalMasuk   DateTime    @map("tanggal_masuk")
   createdAt      DateTime    @default(now()) @map("created_at")
 
@@ -64,7 +64,7 @@ model BahanKeluar {
   id             String      @id @default(uuid()) @db.Uuid
   bahanMakananId String      @map("bahan_makanan_id") @db.Uuid
   bahanMakanan   BahanMakanan @relation(fields: [bahanMakananId], references: [id])
-  jumlah         Int
+  jumlah         Float
   tanggalKeluar  DateTime    @map("tanggal_keluar")
   createdAt      DateTime    @default(now()) @map("created_at")
 

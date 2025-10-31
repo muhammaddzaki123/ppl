@@ -31,6 +31,7 @@ export interface FormFieldConfig<TFormValues extends FieldValues> {
   options?: { value: string; label: string }[];
   searchPlaceholder?: string;
   noResultsMessage?: string;
+  step?: string;
 }
 
 interface GenericFormProps<TFormValues extends FieldValues> {
@@ -97,6 +98,7 @@ export function GenericForm<TFormValues extends FieldValues>({
                             | readonly string[]
                             | undefined
                         }
+                        step={fieldConfig.step}
                       />
                     )}
                   </FormControl>

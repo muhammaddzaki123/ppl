@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 const BahanKeluarSchema = z.object({
   bahanMakananId: z.string().min(1, "Bahan makanan tidak boleh kosong"),
-  jumlah: z.coerce.number().int().min(1, "Jumlah harus lebih dari 0"),
+  jumlah: z.coerce.number().min(0.1, "Jumlah harus lebih dari 0"),
   tanggalKeluar: z.coerce.date(),
 });
 

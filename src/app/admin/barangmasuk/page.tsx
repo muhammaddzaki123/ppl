@@ -51,7 +51,7 @@ import { ArrowUpDown } from "lucide-react";
 
 const BahanMasukSchema = z.object({
   bahanMakananId: z.string().min(1, "Bahan makanan tidak boleh kosong"),
-  jumlah: z.coerce.number().int().min(1, "Jumlah harus lebih dari 0"),
+  jumlah: z.coerce.number().min(0.1, "Jumlah harus lebih dari 0"),
   tanggalMasuk: z.coerce.date(),
 });
 
@@ -338,7 +338,7 @@ export default function BarangMasukPage() {
                             <FormItem>
                               <FormLabel>Jumlah</FormLabel>
                               <FormControl>
-                                <Input type="number" {...field} />
+                                <Input type="number" step="any" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
