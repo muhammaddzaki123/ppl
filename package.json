@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "postbuild": "npx prisma migrate deploy",
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
